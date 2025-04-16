@@ -8,9 +8,12 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Reels from '../Screens/Reels';
 import { StyleSheet, View } from 'react-native';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
-const Tab = createBottomTabNavigator();
+import { TabParamList } from '../Services/types';
+
 
 export function MyTabs() {
+  
+   const Tab = createBottomTabNavigator<TabParamList>();
   return (
     <Tab.Navigator screenOptions={{ headerShown: false, tabBarShowLabel: false,tabBarStyle: { height: responsiveHeight(5) }}}>
       <Tab.Screen name="Home" component={Home} options={{tabBarIcon:()=>(

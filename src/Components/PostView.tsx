@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import Ion from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+
 const PostView = () => {
   return (
     <View style={styles.postView}>
@@ -13,10 +14,7 @@ const PostView = () => {
             <TouchableOpacity>
             <View style={styles.story}></View>
             </TouchableOpacity>
-            <View>
-              <Text style={{fontSize: responsiveFontSize(1.6)}}>Name</Text>
-              <Text style={{fontSize: responsiveFontSize(1.6)}}>Music</Text>
-            </View>
+              <Text style={{fontSize: responsiveFontSize(1.6)}}>Meow_Cookie</Text>
           </View>
           <TouchableOpacity>
           <Entypo name="dots-three-vertical" size={16} style={styles.iconDot} />

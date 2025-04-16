@@ -1,5 +1,5 @@
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -8,20 +8,28 @@ import {
 import ff from '../Services/fontFamily';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Ion from 'react-native-vector-icons/Ionicons';
-import Entypo from 'react-native-vector-icons/Entypo';
-import Fontisto from 'react-native-vector-icons/Fontisto';
 import StoryView from '../Components/StoryView';
 import PostView from '../Components/PostView';
 import { ScrollView } from 'react-native-gesture-handler';
-import { RouteProp } from '@react-navigation/native';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import { RootStack } from '../Services/types';
-type Route = RouteProp<RootStack, 'Home'>
-type props = {
-  route: Route
-}
-const Home = ({route}:props) => {
+import { useSelector } from 'react-redux';
+import { RootState, store } from '../Redux/store';
+import { handleUser } from '../Services/Data';
+
+
+
+const Home = () => {
+  type Route = RouteProp<RootStack, 'Home'>
+  const route = useRoute<Route>()
   const uid=route.params;
-  console.log(uid,"uid")
+
+  // console.log(uid,"uid")
+  const loggedInUser = useSelector((state: RootState)=> state.auth.user)
+  // console.log(loggedInUser,"loggedin")
+
+
+  const users = handleUser()
   return (
     <View style={styles.container}>
       <View style={styles.header}>

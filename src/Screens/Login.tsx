@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -9,15 +9,21 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import type {StackNavigationProp} from '@react-navigation/stack';
-import {AuthState, RootStack} from '../Services/types';
+import {AuthState, CurrUser, RootStack, User} from '../Services/types';
 import {responsiveWidth} from 'react-native-responsive-dimensions';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../Redux/store';
 import {signInWithEandPass} from '../Config/EmailAndPassword';
+import PrimaryButton from '../Components/Common/PrimaryButton';
+import { handleLogin } from '../Services/Functions';
+import { setUser } from '../Redux/AuthSlice';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [disabled,setDisabled] = useState(true)
+  const [loading, setLoading] = useState(false);
+
   type StackNavigation = StackNavigationProp<RootStack, 'Login'>;
   const navigation = useNavigation<StackNavigation>();
 
@@ -25,19 +31,41 @@ const Login = () => {
   //SO WE CAN USE THE AUTHSTATE TYPE TO GET THE LOGIN STATE
 
   const login = useSelector((state: RootState) => state.auth.login);
-
   const dispatch = useDispatch<AppDispatch>();
+
+  
   const handleLogin = async() => {
-    const user = await dispatch(signInWithEandPass({email, password}));
-    if (signInWithEandPass.fulfilled.match(user)) {
-      // result.payload contains the user
-      const payload = {...user.payload}
-      navigation.navigate('Home', {userId: payload.uid});
-      console.log(payload.uid)
-    } else {
-      console.log('Login failed:', user.error?.message);
+    try {
+      const user = await dispatch(signInWithEandPass({email, password}));
+      // console.log(typeof(user.payload))
+      const payload = user.payload as User;
+      console.log("CurrUser",payload)
+      if (typeof(user.payload)!=='undefined') {
+        // result.payload contains the user
+        dispatch(setUser(payload as User))
+        navigation.navigate('MyTabs', {
+          screen: 'Home', 
+        });
+        // console.log(payload.uid)
+    }
+    } catch (error) {
+      console.log('Login failed:', error);
+      
     }
   };
+
+
+
+  // useEffect(() => {
+  //   if (email && password) {
+  //     setDisabled(false);
+  //   } else {
+  //     setDisabled(true);
+  //   }
+  // }, [email, password]);
+
+
+
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
@@ -66,6 +94,7 @@ const Login = () => {
           <TouchableOpacity style={styles.button} onPress={handleLogin}>
             <Text style={styles.buttonText}>Log In</Text>
           </TouchableOpacity>
+          {/* <PrimaryButton styleBtn={styles.button} styleText={styles.buttonText} text='Login' disabled={disabled}  onPress={handleLogin} loading={false}/> */}
         </View>
 
         <Text style={styles.signUpText}>

@@ -1,6 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {AuthState} from '../Services/types';
-import {signUpWithEmailAndPassword} from '../Config/EmailAndPassword';
+import {AuthState, User} from '../Services/types';
 
 const initialState: AuthState = {
   login: {
@@ -40,26 +39,14 @@ export const authSlice = createSlice({
       state.signup.username = action.payload.username;
       state.signup.password = action.payload.password;
     },
-    setUser: (state, action: PayloadAction<any>) => {
-      state.user = action.payload;
+    setUser: (state, action: PayloadAction<User>) => {
+      state.user = action.payload
     },
+    
   },
-//   extraReducers: builder => {
-//     builder
-//       .addCase(signUpWithEmailAndPassword.pending, state => {
-//         state.loading = true;
-//         state.error = null;
-//       })
-//       .addCase(signUpWithEmailAndPassword.fulfilled, (state, action) => {
-//         state.loading = false;
-//         state.user = action.payload;
-//       })
-//       .addCase(signUpWithEmailAndPassword.rejected, (state, action) => {
-//         state.loading = false;
-//         state.error = action.payload;
-//       });
-//   },
+
 });
+
 
 export const {login, signup, setUser} = authSlice.actions;
 export default authSlice.reducer;

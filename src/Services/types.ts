@@ -1,13 +1,12 @@
 export interface Comment{
   id: string;
-  user: string;
+  userId: string;
   text: string;
 };
 
 export interface Post {
   id: string;
-  username: string;
-  profileImage: string;
+  userId: string;
   postImage: string;
   caption: string;
   likes: number;
@@ -19,14 +18,25 @@ export interface Post {
 export type RootStack = {
   Login: undefined,
   SignUp: undefined,
-  Home: {userId: string}
+  Home: undefined,
+  
 }
+
+// export interface CurrUser {
+//   uid: string,
+//   email: string
+// }
 export interface User {
   uid: string,
   username: string,
   email: string,
-  photoURL: string,
+  photoURL: string | null,
   createdAt: string,
+  posts: Post[] ,
+}
+
+export type UserState = {
+  users: User[]
 }
 
 export type AuthState = {
@@ -42,4 +52,22 @@ export type AuthState = {
   user: User | null,
   loading: boolean,
   error: null,
+};
+
+
+export type TabParamList = {
+  Home: undefined;
+  Search: undefined;
+  Create: undefined;
+  Reels: undefined;
+  Profile: undefined;
+}
+
+export type StackParamList = {
+  Signup: undefined;
+  Login: undefined;
+  MyTabs: {
+    screen: keyof TabParamList,
+    params: TabParamList[keyof TabParamList]   //values of each key in the tab eg: value of key home is userif param...for search its undefined
+   }
 };

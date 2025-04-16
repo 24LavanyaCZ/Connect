@@ -23,6 +23,7 @@ export default function Signup() {
   const dispatch = useDispatch<AppDispatch>()
   const handleSignUp = ()=>{
     dispatch(signUpWithEmailAndPassword({email, username, password}))
+    navigation.navigate('Login')
   }
   return (
     <View style={styles.container}>
