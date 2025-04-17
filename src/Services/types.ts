@@ -1,44 +1,45 @@
-export interface Comment{
+import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
+
+export interface Comment {
   id: string;
   userId: string;
   text: string;
-};
+}
 
+//separate posts db
 export interface Post {
   id: string;
   userId: string;
   postImage: string;
   caption: string;
   likes: number;
-  time: string;
+  time: FirebaseFirestoreTypes.Timestamp | null;
   comments: Comment[];
 }
 
-
 export type RootStack = {
-  Login: undefined,
-  SignUp: undefined,
-  Home: undefined,
-  
-}
+  Login: undefined;
+  SignUp: undefined;
+  Home: undefined;
+};
 
-// export interface CurrUser {
-//   uid: string,
-//   email: string
-// }
+
 export interface User {
-  uid: string,
-  username: string,
-  email: string,
-  photoURL: string | null,
-  createdAt: string,
-  posts: Post[] ,
+  uid: string;
+  username: string;
+  email: string;
+  photoURL: string | null;
+  // createdAt: string;
+  posts: Array<{id: string}>;
 }
 
 export type UserState = {
-  users: User[]
-}
+  users: User[];
+};
 
+export type PostState = {
+  postsArr: Post[];
+};
 export type AuthState = {
   login: {
     email: string;
@@ -49,11 +50,10 @@ export type AuthState = {
     username: string;
     password: string;
   };
-  user: User | null,
-  loading: boolean,
-  error: null,
+  user: User | null;
+  loading: boolean;
+  error: null;
 };
-
 
 export type TabParamList = {
   Home: undefined;
@@ -61,13 +61,13 @@ export type TabParamList = {
   Create: undefined;
   Reels: undefined;
   Profile: undefined;
-}
+};
 
 export type StackParamList = {
   Signup: undefined;
   Login: undefined;
   MyTabs: {
-    screen: keyof TabParamList,
-    params: TabParamList[keyof TabParamList]   //values of each key in the tab eg: value of key home is userif param...for search its undefined
-   }
+    screen: keyof TabParamList;
+    params: TabParamList[keyof TabParamList]; //values of each key in the tab eg: value of key home is userif param...for search its undefined
+  };
 };

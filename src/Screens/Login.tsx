@@ -39,10 +39,10 @@ const Login = () => {
       const user = await dispatch(signInWithEandPass({email, password}));
       // console.log(typeof(user.payload))
       const payload = user.payload as User;
-      console.log("CurrUser",payload)
+      // console.log("CurrUser",payload)
       if (typeof(user.payload)!=='undefined') {
         // result.payload contains the user
-        dispatch(setUser(payload as User))
+        dispatch(setUser(payload as User))  //setting current user in redux store
         navigation.navigate('MyTabs', {
           screen: 'Home', 
         });

@@ -8,6 +8,7 @@ export const store = configureStore({
     reducer:{
         posts: postSlice.reducer,
         auth: authSlice.reducer,
+        users: UserSlice.reducer
     }
 })
 

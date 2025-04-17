@@ -21,6 +21,7 @@ export default function Signup() {
   const [password, setPassword] = useState('');
 
   const dispatch = useDispatch<AppDispatch>()
+  
   const handleSignUp = ()=>{
     dispatch(signUpWithEmailAndPassword({email, username, password}))
     navigation.navigate('Login')

@@ -1,5 +1,5 @@
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -10,26 +10,30 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import Ion from 'react-native-vector-icons/Ionicons';
 import StoryView from '../Components/StoryView';
 import PostView from '../Components/PostView';
-import { ScrollView } from 'react-native-gesture-handler';
-import { RouteProp, useRoute } from '@react-navigation/native';
-import { RootStack } from '../Services/types';
-import { useSelector } from 'react-redux';
-import { RootState, store } from '../Redux/store';
-import { handleUser } from '../Services/Data';
-
-
+import {ScrollView} from 'react-native-gesture-handler';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch, RootState, store} from '../Redux/store';
+import {listenToUsers} from '../Redux/UserSlice';
+import { dispatch } from '../Services/Data';
+import { listenToPosts } from '../Redux/PostsSlice';
 
 const Home = () => {
-  type Route = RouteProp<RootStack, 'Home'>
-  const route = useRoute<Route>()
-  const uid=route.params;
-
+  // type Route = RouteProp<RootStack, 'Home'>
+  // const route = useRoute<Route>()
+  // const uid=route.params;
   // console.log(uid,"uid")
-  const loggedInUser = useSelector((state: RootState)=> state.auth.user)
-  // console.log(loggedInUser,"loggedin")
+  const loggedInUser = useSelector((state: RootState) => state.auth.user); //get the current user from store
+  
+  console.log(loggedInUser, 'loggedin');
+  const allUsers = useSelector((state: RootState)=> state.users)
+  //get users from store 
+  useEffect(()=>{
+    listenToUsers(dispatch);
+    listenToPosts(dispatch)
+  },[dispatch])
 
+  console.log('Users====', allUsers);
 
-  const users = handleUser()
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -44,11 +48,11 @@ const Home = () => {
       <StoryView />
 
       {/* POST */}
-     <ScrollView showsVerticalScrollIndicator={false}>
-     {Array.from({length:4}).map((_,i)=>(
-        <PostView key={i}/>
-      ))}
-     </ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {Array.from({length: 4}).map((_, i) => (
+          <PostView key={i} />
+        ))}
+      </ScrollView>
     </View>
   );
 };
@@ -78,5 +82,4 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(2.5),
     fontFamily: ff.lBI,
   },
-  
 });

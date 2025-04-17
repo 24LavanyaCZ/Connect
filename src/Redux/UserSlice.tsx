@@ -1,19 +1,11 @@
-import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {User, UserState} from '../Services/types';
-import { collection, getDocs } from '@react-native-firebase/firestore';
+import { collection, onSnapshot } from '@react-native-firebase/firestore';
 import { db } from '../Config/firebaseConfig';
 
 const initialState: UserState = {
   users: []
 };
-
-export const fetchAll = createAsyncThunk('users/fetchAll',async()=>{
-  const querySnapshot = await getDocs(collection(db, 'Users'));
-  return querySnapshot.docs.map(doc => ({
-    uid: doc.id,
-    ...doc.data(),
-  }));
-})
 
 export const UserSlice = createSlice({
   name: 'users',
@@ -22,16 +14,23 @@ export const UserSlice = createSlice({
     // addUser: (state, action: PayloadAction<User>) =>{
     //     state.users.push(action.payload)
     // },
-    setUsers: (state, action: PayloadAction<User[]>)=>{
-      state.users.push(action.payload)
+    setAllUsers: (state, action: PayloadAction<User[]>)=>{
+      state.users = action.payload
     }
   },
-  extraReducers: (builder) => {
-    builder.addCase(fetchAll.fulfilled, (state, action: PayloadAction<User[]>) => {
-      state.users = action.payload;
-    });
-  }  
 });
 
-export const { setUsers } = UserSlice.actions;
+export const listenToUsers = (dispatch:any)=>{
+  const users = collection(db, 'Users')
+  onSnapshot(users, (snapshot)=>{
+    const allUsers : User[] = snapshot.docs.map(doc => ({
+      uid: doc.id,
+      ...doc.data()
+    })) as User[]
+
+    dispatch(setAllUsers(allUsers))
+  })
+}
+
+export const { setAllUsers } = UserSlice.actions;
 export default UserSlice.reducer;

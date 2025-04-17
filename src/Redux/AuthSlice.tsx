@@ -11,7 +11,7 @@ const initialState: AuthState = {
     username: '',
     password: '',
   },
-  user: null,
+  user: null,  //stores the loggedIn user
   loading: false,
   error: null,
 };
@@ -39,12 +39,10 @@ export const authSlice = createSlice({
       state.signup.username = action.payload.username;
       state.signup.password = action.payload.password;
     },
-    setUser: (state, action: PayloadAction<User>) => {
+    setUser: (state, action: PayloadAction<User>) => {  //sets the current user in redux user above 
       state.user = action.payload
     },
-    
   },
-
 });
 
 
