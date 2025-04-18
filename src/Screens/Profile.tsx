@@ -9,10 +9,8 @@ import {
   FlatList,
   Dimensions,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {AppDispatch, RootState} from '../Redux/store';
-import {listenToPosts} from '../Redux/PostsSlice';
-import {dispatch} from '../Services/Data';
+import {useSelector} from 'react-redux';
+import {RootState} from '../Redux/store';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {
   responsiveHeight,
@@ -24,13 +22,13 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
-import { logout } from '../Config/EmailAndPassword';
+import {logout} from '../Config/EmailAndPassword';
 
 const Profile = () => {
   // console.log('UserId in profile', user);
   const loggedIn = useSelector((state: RootState) => state.auth.user);
   const allPosts = useSelector((state: RootState) => state.posts.postsArr);
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   console.log('posts====', allPosts);
   const userPostIds = loggedIn?.posts?.map(p => p.id) || [];
   const posts = allPosts.filter(post => userPostIds.includes(post.id));
@@ -45,14 +43,14 @@ const Profile = () => {
       console.error('Logout failed:', error);
     }
   };
-  
+
   return (
     <View style={styles.container}>
       <View
         style={{
-          position:'absolute',
-          right:responsiveWidth(4),
-          top:10
+          position: 'absolute',
+          right: responsiveWidth(4),
+          top: 10,
         }}>
         <Menu>
           <MenuTrigger>
@@ -65,7 +63,6 @@ const Profile = () => {
                 padding: 5,
                 borderRadius: 8,
                 backgroundColor: 'white',
-                
               },
             }}>
             <MenuOption onSelect={() => console.log('Settings')}>

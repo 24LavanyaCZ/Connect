@@ -21,50 +21,97 @@ import {TextInput} from 'react-native-gesture-handler';
 import {
   addDoc,
   collection,
-  doc,
   getDoc,
-  getDocs,
   serverTimestamp,
-  setDoc,
 } from '@react-native-firebase/firestore';
 import {db} from '../Config/firebaseConfig';
 import {useNavigation} from '@react-navigation/native';
 import {dispatch} from '../Services/Data';
 import {setUser} from '../Redux/AuthSlice';
 import {Post, User} from '../Services/types';
-import {addPost, setAllPosts} from '../Redux/PostsSlice';
 
+type ImageData = {
+  width?: number;
+  height?: number;
+  type?: string;
+  fileName?: string;
+  fileSize?: number;
+  uri?: string;
+};
 const Create = () => {
   const [image, setImage] = useState<string | null>(null);
+  const [imageData, setImageData] = useState<ImageData | null>(null);
   const [focus, setFocus] = useState<boolean>(false);
   const [caption, setCaption] = useState<string>('');
 
   const navigation = useNavigation();
+
+  useEffect(() => {
+    console.log(imageData);
+    console.log(image)
+  }, [imageData]);
+
   const handlePickImage = () => {
-    launchImageLibrary({mediaType: 'photo'}, response => {
+    launchImageLibrary({mediaType: 'photo'}, async response => {
       if (response.didCancel) return;
       if (response.errorCode) {
         Alert.alert('Error', response.errorMessage || 'Something went wrong');
         return;
       }
-      const uri = response.assets?.[0]?.uri;
-      if (uri) setImage(uri);
+      const imageData = response.assets?.[0];
+      if (!imageData) return;
+  
+      console.log(imageData);
+      setImageData(imageData);
+      setImage(imageData?.uri); 
     });
   };
+  
+  const uploadToCloud = async() => {
+    const formData = new FormData();
 
- 
+    formData.append('file', {
+      uri: imageData?.uri,
+      type: imageData?.type,
+      fileName: imageData?.fileName,
+    });
 
+    formData.append('upload_preset', process.env.CLOUDINARY_UPLOAD_PRESET);
+    console.log("here")
+    try {
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
+        {
+          method: 'POST',
+          body: formData,
+        },
+      );
+      console.log("first")
+      const data = await res.json();
+      console.log('Image uploaded to Cloudinary:', data);
+      
+      // Save URL in state
+      return data.secure_url;
+    } catch (error) {
+      console.error('Upload failed:', error);
+      Alert.alert('Upload failed', 'Please try again later.');
+    }
+  };
   //create post in firestore then get it with id complete object and addPost to the postArr
   let loggedInUser = useSelector((state: RootState) => state.auth.user);
+
   const handlePost = async () => {
     if (!loggedInUser) {
       Alert.alert('Error', 'User is not logged in');
       return;
     }
 
+    const imageUrl = await uploadToCloud();
+    console.log("uri",imageUrl)
+    if(!imageUrl) return;
     const postData = {
       userId: loggedInUser.uid.toString(),
-      postImage: image,
+      postImage: imageUrl,
       caption,
       likes: 0,
       time: serverTimestamp(),
@@ -77,23 +124,22 @@ const Create = () => {
     const userDoc = await getDoc(userRef);
     if (userDoc) {
       const userData = userDoc.data() as User;
-      
+
       // Append the new post ID to the existing posts array
-      const updatedPosts = [...userData.posts, { id: postId }];
-      
+      const updatedPosts = [...userData.posts, {id: postId}];
+
       // Update the user's document with the new posts array
       await userRef.update({
         posts: updatedPosts, // Add the new post's ID to the user's posts array
       });
     }
-  
+
     const updatedUserDoc = await userRef.get();
     const updatedUser = updatedUserDoc.data() as User;
-    console.log(updatedUser)
+    console.log(updatedUser);
     dispatch(setUser(updatedUser));
     Alert.alert('Post created successfully');
     navigation.navigate('Home');
-
   };
 
   return (
@@ -121,7 +167,7 @@ const Create = () => {
         />
       </View>
 
-      <TouchableOpacity style={styles.postBtn} onPress={() => handlePost()}>
+      <TouchableOpacity style={styles.postBtn} onPress={handlePost}>
         <Text style={styles.postText}>Post</Text>
       </TouchableOpacity>
     </View>
