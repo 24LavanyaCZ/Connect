@@ -73,11 +73,11 @@ const Create = () => {
     formData.append('file', {
       uri: imageData?.uri,
       type: imageData?.type,
-      fileName: imageData?.fileName,
+      name: imageData?.fileName,
     });
 
     formData.append('upload_preset', process.env.CLOUDINARY_UPLOAD_PRESET);
-    console.log("here")
+    // console.log("here")
     try {
       const res = await fetch(
         `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
@@ -140,6 +140,7 @@ const Create = () => {
     dispatch(setUser(updatedUser));
     Alert.alert('Post created successfully');
     navigation.navigate('Home');
+    console.log("Post clicked")
   };
 
   return (

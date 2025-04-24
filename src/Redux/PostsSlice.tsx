@@ -3,10 +3,7 @@ import { Post, PostState } from "../Services/types";
 import { collection, onSnapshot } from "@react-native-firebase/firestore";
 import { db } from "../Config/firebaseConfig";
 
-// const dummyPosts = Array.from({length: 12}).map((_, i) => ({
-//   id: i.to'String'(),
-//   image: `https://picsum.photos/seed/${i}/300/300`,
-// }));
+
 
 const initialState: PostState  = {
     postsArr: []

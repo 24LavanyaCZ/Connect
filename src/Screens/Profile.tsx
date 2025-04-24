@@ -25,11 +25,13 @@ import {
 import {logout} from '../Config/EmailAndPassword';
 
 const Profile = () => {
-  // console.log('UserId in profile', user);
   const loggedIn = useSelector((state: RootState) => state.auth.user);
   const allPosts = useSelector((state: RootState) => state.posts.postsArr);
+
+  const [showPostModal, setShowPostModal] = useState<Boolean>(false)
   const navigation = useNavigation();
-  console.log('posts====', allPosts);
+  // console.log('UserId in profile', user);
+  // console.log('posts====', allPosts);
   const userPostIds = loggedIn?.posts?.map(p => p.id) || [];
   const posts = allPosts.filter(post => userPostIds.includes(post.id));
 
@@ -44,6 +46,10 @@ const Profile = () => {
     }
   };
 
+
+  const showPost = ()=>{
+    setShowPostModal(!showPostModal)
+  }
   return (
     <View style={styles.container}>
       <View
@@ -111,14 +117,14 @@ const Profile = () => {
         keyExtractor={item => item.id}
         numColumns={3}
         renderItem={({item}) => (
-          <View>
+          <TouchableOpacity onPress={showPost}>
             <Image
               source={{
-                uri: 'https://imgs.search.brave.com/XLUVQ-2famLf-4L4DE10yNkmTji31MPl9Y6b_cZ3bko/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvNDg5/MjcyNDE3L3Bob3Rv/L2NhdC1hbmQtZG9n/LXNpdHRpbmctdG9n/ZXRoZXIuanBnP3M9/NjEyeDYxMiZ3PTAm/az0yMCZjPWZjNVFN/UGZyeHNtQzZzZWVD/cC1PLUtjd05nVUlz/WHU0bWQzeEFHcS1J/d3c9',
+                uri: item.postImage,
               }}
               style={styles.postImage}
             />
-          </View>
+          </TouchableOpacity>
         )}
         style={styles.postsGrid}
       />
@@ -157,8 +163,9 @@ const styles = StyleSheet.create({
   editProfileText: {fontSize: 14},
   postsGrid: {marginTop: 10},
   postImage: {
-    width: Dimensions.get('window').width / 3 - responsiveWidth(1),
-    height: Dimensions.get('window').width / 3 - responsiveWidth(0),
+    width: Dimensions.get('window').width / 3 - responsiveWidth(2),
+    height: Dimensions.get('window').width / 3 - responsiveWidth(1),
     marginTop: responsiveHeight(2),
+    marginRight: responsiveWidth(1)
   },
 });
