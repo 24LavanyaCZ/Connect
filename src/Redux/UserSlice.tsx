@@ -16,13 +16,20 @@ export const UserSlice = createSlice({
     // },
     setAllUsers: (state, action: PayloadAction<User[]>)=>{
       state.users = action.payload
+    },
+    updateUser: (state, action: PayloadAction<User>)=>{
+      const index = state.users.findIndex(user => user.uid === action.payload.uid)
+      if(index !== -1){
+        state.users[index] = action.payload
+      }
     }
   },
 });
 
+
 export const listenToUsers = (dispatch:any)=>{
   const users = collection(db, 'Users')
-  onSnapshot(users, (snapshot)=>{
+  const unsubscribe = onSnapshot(users, (snapshot)=>{
     const allUsers : User[] = snapshot.docs.map(doc => ({
       uid: doc.id,
       ...doc.data()
@@ -30,7 +37,8 @@ export const listenToUsers = (dispatch:any)=>{
 
     dispatch(setAllUsers(allUsers))
   })
+  return unsubscribe;
 }
 
-export const { setAllUsers } = UserSlice.actions;
+export const { setAllUsers, updateUser } = UserSlice.actions;
 export default UserSlice.reducer;

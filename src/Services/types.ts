@@ -1,4 +1,10 @@
-import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
+import {
+  doc,
+  FirebaseFirestoreTypes,
+  getDoc,
+  updateDoc,
+} from '@react-native-firebase/firestore';
+
 
 export interface Comment {
   id: string;
@@ -10,10 +16,13 @@ export interface Comment {
 export interface Post {
   id: string;
   userId: string;
+  username: string;
   postImage: string;
   caption: string;
   likes: number;
+  likedBy: Array<{uid: string}>;
   time: FirebaseFirestoreTypes.Timestamp | null;
+  timeString: string;
   comments: Comment[];
 }
 
@@ -23,11 +32,11 @@ export type RootStack = {
   Home: undefined;
 };
 
-
 export interface User {
   uid: string;
   username: string;
   email: string;
+  desc: string;
   photoURL: string | null;
   // createdAt: string;
   posts: Array<{id: string}>;
@@ -60,7 +69,11 @@ export type TabParamList = {
   Search: undefined;
   Create: undefined;
   Reels: undefined;
-  Profile: undefined;
+  Profile: {
+    isOwnProfile?: boolean;
+    item?: User;
+    _timestamp?: number;
+  }
 };
 
 export type StackParamList = {
@@ -70,4 +83,21 @@ export type StackParamList = {
     screen: keyof TabParamList;
     params: TabParamList[keyof TabParamList]; //values of each key in the tab eg: value of key home is userif param...for search its undefined
   };
+  ViewPosts: {
+    post: Post;
+    loggedIn: User;
+  };
+  Edit: {
+    loggedIn: User;
+  };
+};
+
+
+export type ImageData = {
+  width?: number;
+  height?: number;
+  type?: string;
+  fileName?: string;
+  fileSize?: number;
+  uri?: string;
 };

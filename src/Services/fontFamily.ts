@@ -1,4 +1,4 @@
-const fontFamily = {
+const ff = {
     mReg: 'Montserrat-Regular',
     mSb: 'Montserrat-SemiBold',
     mB: 'Montserrat-Bold',
@@ -13,8 +13,9 @@ const fontFamily = {
     osB: 'OpenSans-Bold',
     pSI: 'PTSans-BoldItalic',
     mELI: 'Montserrat-Italic',
-    lBI: 'Lato-BoldItalic'
+    lBI: 'Lato-BoldItalic',
+    lI: 'Lato-Italic',
   };
   
-  export default fontFamily;
+  export default ff;
   

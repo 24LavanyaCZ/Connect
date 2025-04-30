@@ -2,8 +2,10 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import SignUp from '../Screens/SignUp';
 import Login from '../Screens/Login';
-import { MyTabs } from './TabNavigator';
+import ViewPosts from '../Screens/ViewPosts';
 import { StackParamList } from '../Services/types';
+import MyTabs from './TabNavigator';
+import EditProfile from '../Screens/EditProfile';
 
 export function MyStack() {
   
@@ -13,7 +15,8 @@ export function MyStack() {
       <Stack.Screen name="Signup" component={SignUp}/>
       <Stack.Screen name="Login" component={Login}/>
       <Stack.Screen name="MyTabs" component={MyTabs}/>
-
+      <Stack.Screen name="ViewPosts" component={ViewPosts} initialParams={{post: null, loggedIn:null}}/>
+      <Stack.Screen name="Edit" component={EditProfile} initialParams={{loggedIn:null}}/>
     </Stack.Navigator>
   );
 }

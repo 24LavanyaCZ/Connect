@@ -31,6 +31,7 @@ export const signUpWithEmailAndPassword = createAsyncThunk(
         uid: user.uid,
         username,
         email: user.email || '',
+        desc: '',
         photoURL: user.photoURL || null,
         createdAt: serverTimestamp(),
         posts: [],

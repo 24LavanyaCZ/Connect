@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux';
 
 import { AppDispatch } from '../Redux/store';
 import { signUpWithEmailAndPassword } from '../Config/EmailAndPassword';
+import axios from 'axios';
 
 export default function Signup() {
   const navigation = useNavigation();
@@ -26,6 +27,21 @@ export default function Signup() {
     dispatch(signUpWithEmailAndPassword({email, username, password}))
     navigation.navigate('Login')
   }
+
+
+  // useEffect(() => {
+  //   getPosts()
+  // }, []);
+
+  // const getPosts =async()=>{
+  //   try {
+  //     const response = await axios.post('https://kmjyy.wiremockapi.cloud/upiGetNcmcSdkToken', {});
+  //     console.log("Data", response.data);
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // }
+
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>

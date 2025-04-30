@@ -15,8 +15,8 @@ import {
 import ff from '../Services/fontFamily';
 import {launchImageLibrary} from 'react-native-image-picker';
 
-import {useSelector} from 'react-redux';
-import {RootState} from '../Redux/store';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch, RootState} from '../Redux/store';
 import {TextInput} from 'react-native-gesture-handler';
 import {
   addDoc,
@@ -26,18 +26,10 @@ import {
 } from '@react-native-firebase/firestore';
 import {db} from '../Config/firebaseConfig';
 import {useNavigation} from '@react-navigation/native';
-import {dispatch} from '../Services/Data';
 import {setUser} from '../Redux/AuthSlice';
-import {Post, User} from '../Services/types';
+import {ImageData, User} from '../Services/types';
+import {dispatch} from '../Services/Data';
 
-type ImageData = {
-  width?: number;
-  height?: number;
-  type?: string;
-  fileName?: string;
-  fileSize?: number;
-  uri?: string;
-};
 const Create = () => {
   const [image, setImage] = useState<string | null>(null);
   const [imageData, setImageData] = useState<ImageData | null>(null);
@@ -48,7 +40,7 @@ const Create = () => {
 
   useEffect(() => {
     console.log(imageData);
-    console.log(image)
+    console.log(image);
   }, [imageData]);
 
   const handlePickImage = () => {
@@ -60,14 +52,14 @@ const Create = () => {
       }
       const imageData = response.assets?.[0];
       if (!imageData) return;
-  
+
       console.log(imageData);
       setImageData(imageData);
-      setImage(imageData?.uri); 
+      setImage(imageData?.uri);
     });
   };
-  
-  const uploadToCloud = async() => {
+
+  const uploadToCloud = async () => {
     const formData = new FormData();
 
     formData.append('file', {
@@ -86,10 +78,10 @@ const Create = () => {
           body: formData,
         },
       );
-      console.log("first")
+      console.log('res', res);
       const data = await res.json();
       console.log('Image uploaded to Cloudinary:', data);
-      
+
       // Save URL in state
       return data.secure_url;
     } catch (error) {
@@ -107,14 +99,17 @@ const Create = () => {
     }
 
     const imageUrl = await uploadToCloud();
-    console.log("uri",imageUrl)
-    if(!imageUrl) return;
+    console.log('uri', imageUrl);
+    if (!imageUrl) return;
     const postData = {
       userId: loggedInUser.uid.toString(),
+      username: loggedInUser.username,
       postImage: imageUrl,
       caption,
       likes: 0,
+      likedBy: [],
       time: serverTimestamp(),
+      timeString: new Date().toISOString(), // Redux-friendly
       comments: [],
     };
     const posts = await addDoc(collection(db, 'Posts'), postData);
@@ -136,11 +131,26 @@ const Create = () => {
 
     const updatedUserDoc = await userRef.get();
     const updatedUser = updatedUserDoc.data() as User;
-    console.log(updatedUser);
+    console.log(updatedUserDoc.data());
+    // Alert.alert('Post created successfully');
+    // navigation.navigate('Home');
+
+    Alert.alert(
+      'Post created successfully',
+      '',
+      [
+        {
+          text: 'OK',
+          onPress: () => {
+            navigation.navigate('Home');
+          },
+        },
+      ],
+      {cancelable: false},
+    );
     dispatch(setUser(updatedUser));
-    Alert.alert('Post created successfully');
-    navigation.navigate('Home');
-    console.log("Post clicked")
+    setCaption('');
+    setImage(null);
   };
 
   return (

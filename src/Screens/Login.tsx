@@ -33,7 +33,6 @@ const Login = () => {
   const login = useSelector((state: RootState) => state.auth.login);
   const dispatch = useDispatch<AppDispatch>();
 
-  
   const handleLogin = async() => {
     try {
       const user = await dispatch(signInWithEandPass({email, password}));
@@ -53,7 +52,6 @@ const Login = () => {
       
     }
   };
-
 
 
   // useEffect(() => {
