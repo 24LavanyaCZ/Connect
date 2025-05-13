@@ -32,7 +32,7 @@ export const listenToUsers = (dispatch:any)=>{
   const unsubscribe = onSnapshot(users, (snapshot)=>{
     const allUsers : User[] = snapshot.docs.map(doc => ({
       uid: doc.id,
-      ...doc.data()
+      ...doc.data(),
     })) as User[]
 
     dispatch(setAllUsers(allUsers))

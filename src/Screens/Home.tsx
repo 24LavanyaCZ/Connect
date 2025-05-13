@@ -37,16 +37,16 @@ const Home = () => {
   const [dummy, setDummy] = useState([]);
   const [liked, setLiked] = useState<Boolean>();
   const navigation = useNavigation();
-  console.log(loggedInUser, 'loggedin');
-  console.log(allPosts, 'posts');
+  // console.log(loggedInUser, 'loggedin');
+  // console.log(allPosts, 'posts');
   // console.log(allUsers, 'users');
 
   const fetchPosts = async () => {
-    console.log('Run server in mockoon');
+    console.log('Run server in mockoon and change ip address');
     const response = await axios.get(
-      'http://172.16.16.46:3001/posts/dummyPosts',
+      'http://172.16.16.44:3001/posts/dummyPosts',
     );
-    console.log('Data', response.data);
+    // console.log('Data', response.data);
     setDummy(response.data);
     return response.data;
   };
@@ -69,7 +69,7 @@ const Home = () => {
   const data = [...allPosts, ...dummy];
 
   const handleLike = async ({item}) => {
-    console.log(item);
+    // console.log(item);
 
     const postRef = doc(db, 'Posts', item.id); // Find post based on the id
     const postDoc = await getDoc(postRef); // Get that post document
@@ -98,7 +98,7 @@ const Home = () => {
           }),
         );
 
-        console.log('Likes updated to:', allPosts);
+        // console.log('Likes updated to:', allPosts);
       } else {
         updatedLikes = postData.likes + 1;
         const updatedLikedBy = [...postData.likedBy, loggedInUser?.uid]; // Add the user who liked the post
@@ -116,7 +116,7 @@ const Home = () => {
           }),
         );
 
-        console.log('Likes updated to:', allPosts);
+        // console.log('Likes updated to:', allPosts);
       }
     } else {
       console.log('Post not found');
@@ -124,7 +124,7 @@ const Home = () => {
   };
 
   const renderPosts = ({item}) => {
-    console.log('DATA', item);
+    // console.log('DATA', item);
     return (
       <View
         style={{

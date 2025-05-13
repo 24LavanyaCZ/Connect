@@ -17,11 +17,16 @@ export const listenToPosts = async (dispatch: any) => {
   const posts = collection(db, 'Posts');
 
   const unsubscribe = onSnapshot(posts, (snapshot) => {
-    const allPosts: Post[] = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Post[];
+    const allPosts: Post[] = snapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        time: data.time?.toDate().toISOString(), 
+      }
+    }) as Post[];
 
+    
     const sortedPosts = allPosts.sort(
       (a, b) =>
         new Date(b.timeString).getTime() - new Date(a.timeString).getTime(),

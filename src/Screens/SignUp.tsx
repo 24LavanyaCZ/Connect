@@ -6,13 +6,17 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {responsiveWidth} from 'react-native-responsive-dimensions';
-import { useDispatch } from 'react-redux';
+import {useDispatch} from 'react-redux';
 
-import { AppDispatch } from '../Redux/store';
-import { signUpWithEmailAndPassword } from '../Config/EmailAndPassword';
+import {AppDispatch} from '../Redux/store';
+import {signUpWithEmailAndPassword} from '../Config/EmailAndPassword';
 import axios from 'axios';
 
 export default function Signup() {
@@ -21,13 +25,12 @@ export default function Signup() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const dispatch = useDispatch<AppDispatch>()
-  
-  const handleSignUp = ()=>{
-    dispatch(signUpWithEmailAndPassword({email, username, password}))
-    navigation.navigate('Login')
-  }
+  const dispatch = useDispatch<AppDispatch>();
 
+  const handleSignUp = () => {
+    dispatch(signUpWithEmailAndPassword({email, username, password}));
+    navigation.navigate('Login');
+  };
 
   // useEffect(() => {
   //   getPosts()
@@ -43,56 +46,67 @@ export default function Signup() {
   // }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.innerContainer}>
-        <Image
-          source={require('../Assets/Images/logo.png')} // update path as per your structure
-          style={styles.logo}
-          resizeMode="cover"
-        />
+    <KeyboardAvoidingView
+      style={styles.keyboardAvoidingView}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
+        <View style={styles.container}>
+          <View style={styles.innerContainer}>
+            <Image
+              source={require('../Assets/Images/logo.png')} // update path as per your structure
+              style={styles.logo}
+              resizeMode="cover"
+            />
 
-        <View style={styles.form}>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            placeholderTextColor="#ccc"
-            value={email}
-            onChangeText={setEmail}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Username"
-            placeholderTextColor="#ccc"
-            value={username}
-            onChangeText={setUsername}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor="#ccc"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
-          <TouchableOpacity style={styles.button} onPress={(()=>handleSignUp())}>
-            <Text style={styles.buttonText}>Sign Up</Text>
-          </TouchableOpacity>
+            <View style={styles.form}>
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                placeholderTextColor="#ccc"
+                value={email}
+                onChangeText={setEmail}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Username"
+                placeholderTextColor="#ccc"
+                value={username}
+                onChangeText={setUsername}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                placeholderTextColor="#ccc"
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+              />
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => handleSignUp()}>
+                <Text style={styles.buttonText}>Sign Up</Text>
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.signUpText}>
+              Already have an account?{' '}
+              <Text
+                style={styles.signUpLink}
+                onPress={() => navigation.navigate('Login')}>
+                Login
+              </Text>
+            </Text>
+          </View>
         </View>
-
-        <Text style={styles.signUpText}>
-          Already have an account?{' '}
-          <Text
-            style={styles.signUpLink}
-            onPress={() => navigation.navigate('Login')}>
-            Login
-          </Text>
-        </Text>
-      </View>
-    </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     backgroundColor: '#18181b', // zinc-900

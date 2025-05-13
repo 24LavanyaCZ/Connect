@@ -40,7 +40,8 @@ const Profile = () => {
   const route = useRoute<RouteProp<TabParamList, 'Profile'>>();
   const loggedIn = useSelector((state: RootState) => state.auth.user);
   const allPosts = useSelector((state: RootState) => state.posts.postsArr);
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const isFocused = useIsFocused();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -57,7 +58,9 @@ const Profile = () => {
   // 📝 Filter posts for current profile
   const userPostIds = currentProfileUser?.posts?.map(p => p.id) || [];
   const posts = allPosts.filter(post =>
-    isOwnProfile ? userPostIds.includes(post.id) : post.userId === currentProfileUser?.uid,
+    isOwnProfile
+      ? userPostIds.includes(post.id)
+      : post.userId === currentProfileUser?.uid,
   );
 
   // 🔄 Reset to own profile on tab press
@@ -127,10 +130,17 @@ const Profile = () => {
 
       {/* Top Section */}
       <View style={styles.topSection}>
-        <Image
-          source={{uri: currentProfileUser?.photoURL}}
-          style={styles.profilePic}
-        />
+        {currentProfileUser?.photoURL!==null ? (
+          <Image source={{uri: currentProfileUser?.photoURL}}
+            style={styles.profilePic}
+          />       
+        ) : (
+          <Image
+            source={require('../Assets/Images/user.png')}
+            style={styles.profilePic}
+          />
+        )}
+
         <View style={styles.stats}>
           <View style={styles.stat}>
             <Text style={styles.statNumber}>{posts.length || 0}</Text>
@@ -176,10 +186,7 @@ const Profile = () => {
         numColumns={3}
         renderItem={({item}) => (
           <TouchableOpacity onPress={() => showPost(item)}>
-            <Image
-              source={{uri: item.postImage}}
-              style={styles.postImage}
-            />
+            <Image source={{uri: item.postImage}} style={styles.postImage} />
           </TouchableOpacity>
         )}
         style={styles.postsGrid}

@@ -6,6 +6,10 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import type {StackNavigationProp} from '@react-navigation/stack';
@@ -15,13 +19,13 @@ import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../Redux/store';
 import {signInWithEandPass} from '../Config/EmailAndPassword';
 import PrimaryButton from '../Components/Common/PrimaryButton';
-import { handleLogin } from '../Services/Functions';
-import { setUser } from '../Redux/AuthSlice';
+import {handleLogin} from '../Services/Functions';
+import {setUser} from '../Redux/AuthSlice';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [disabled,setDisabled] = useState(true)
+  const [disabled, setDisabled] = useState(true);
   const [loading, setLoading] = useState(false);
 
   type StackNavigation = StackNavigationProp<RootStack, 'Login'>;
@@ -33,26 +37,24 @@ const Login = () => {
   const login = useSelector((state: RootState) => state.auth.login);
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleLogin = async() => {
+  const handleLogin = async () => {
     try {
       const user = await dispatch(signInWithEandPass({email, password}));
       // console.log(typeof(user.payload))
       const payload = user.payload as User;
       // console.log("CurrUser",payload)
-      if (typeof(user.payload)!=='undefined') {
+      if (typeof user.payload !== 'undefined') {
         // result.payload contains the user
-        dispatch(setUser(payload as User))  //setting current user in redux store
+        dispatch(setUser(payload as User)); //setting current user in redux store
         navigation.navigate('MyTabs', {
-          screen: 'Home', 
+          screen: 'Home',
         });
         // console.log(payload.uid)
-    }
+      }
     } catch (error) {
       console.log('Login failed:', error);
-      
     }
   };
-
 
   // useEffect(() => {
   //   if (email && password) {
@@ -62,53 +64,60 @@ const Login = () => {
   //   }
   // }, [email, password]);
 
-
-
   return (
-    <View style={styles.container}>
-      <View style={styles.innerContainer}>
-        <Image
-          source={require('../Assets/Images/logo.png')} // update path as per your structure
-          style={styles.logo}
-          resizeMode="cover"
-        />
+    <KeyboardAvoidingView
+      style={styles.keyboardAvoidingView}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <View style={styles.container}>
+          <View style={styles.innerContainer}>
+            <Image
+              source={require('../Assets/Images/logo.png')} // update path as per your structure
+              style={styles.logo}
+              resizeMode="cover"
+            />
 
-        <View style={styles.form}>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            placeholderTextColor="#ccc"
-            value={email}
-            onChangeText={setEmail}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor="#ccc"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
-          <TouchableOpacity style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>Log In</Text>
-          </TouchableOpacity>
-          {/* <PrimaryButton styleBtn={styles.button} styleText={styles.buttonText} text='Login' disabled={disabled}  onPress={handleLogin} loading={false}/> */}
+            <View style={styles.form}>
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                placeholderTextColor="#ccc"
+                value={email}
+                onChangeText={setEmail}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                placeholderTextColor="#ccc"
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+              />
+              <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                <Text style={styles.buttonText}>Log In</Text>
+              </TouchableOpacity>
+              {/* <PrimaryButton styleBtn={styles.button} styleText={styles.buttonText} text='Login' disabled={disabled}  onPress={handleLogin} loading={false}/> */}
+            </View>
+
+            <Text style={styles.signUpText}>
+              Don't have an account?{' '}
+              <Text
+                style={styles.signUpLink}
+                onPress={() => navigation.navigate('Signup')}>
+                Sign Up
+              </Text>
+            </Text>
+          </View>
         </View>
-
-        <Text style={styles.signUpText}>
-          Don't have an account?{' '}
-          <Text
-            style={styles.signUpLink}
-            onPress={() => navigation.navigate('Signup')}>
-            Sign Up
-          </Text>
-        </Text>
-      </View>
-    </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 export default Login;
 const styles = StyleSheet.create({
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     backgroundColor: '#18181b', // zinc-900

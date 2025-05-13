@@ -43,7 +43,8 @@ const EditProfile = () => {
   const [image, setImage] = useState<string | null>(null);
   const [imageData, setImageData] = useState<ImageData | null>(null);
   const dispatch = useDispatch<AppDispatch>();
-
+  const photoURL = image ? image : loggedIn?.photoURL ; 
+  // console.log(photoURL,"photot") 
   const handlePickImage = () => {
     launchImageLibrary({mediaType: 'photo'}, async response => {
       if (response.didCancel) return;
@@ -54,7 +55,7 @@ const EditProfile = () => {
       const imageData = response.assets?.[0];
       if (!imageData) return;
 
-      console.log(imageData);
+      // console.log(imageData);
       setImageData(imageData);
       setImage(imageData?.uri);
     });
@@ -79,10 +80,13 @@ const EditProfile = () => {
           body: formData,
         },
       );
-      console.log('res',res);
+      // console.log('res',res);
       const data = await res.json();
       console.log('Image uploaded to Cloudinary:', data);
-
+      if(data.error){
+        console.log("here")
+        return null;
+      }
       // Save URL in state
       return data.secure_url;
     } catch (error) {
@@ -99,11 +103,10 @@ const EditProfile = () => {
   
     try {
       const imageUrl = await uploadToCloud();
-      if (!imageUrl) return;
-  
+      // console.log(imageUrl,"imageUrl")  
       const userRef = collection(db, 'Users').doc(loggedIn?.uid);
       const userDoc = await getDoc(userRef);
-      console.log(userDoc);
+      // console.log(userDoc);
       if (userDoc) {
         const userData = userDoc.data() as User;
         const updatedUser = {
@@ -111,7 +114,7 @@ const EditProfile = () => {
           username,
           email,
           desc,
-          photoURL: imageUrl,
+          photoURL: imageUrl || loggedIn?.photoURL ,
         };
   
         await updateDoc(userRef, updatedUser);
@@ -151,10 +154,10 @@ const EditProfile = () => {
 
       {/* Profile Image */}
       <View style={styles.profileImageContainer}>
-        {image ? (
+        {photoURL ? (
           <Image
-            source={{uri: image}}
-            style={styles.profileImage}
+            source={{uri: photoURL}}
+            style={styles.photoImage}
             resizeMode="cover"
           />
         ) : (
@@ -255,6 +258,12 @@ const styles = StyleSheet.create({
     width: responsiveWidth(30),
     height: responsiveWidth(30),
     borderRadius: responsiveWidth(15),
+    padding: responsiveWidth(5),
+  },
+  photoImage:{
+    width: responsiveWidth(35),
+    height: responsiveWidth(35),
+    borderRadius: responsiveWidth(13),
     padding: responsiveWidth(5),
   },
   editIcon: {

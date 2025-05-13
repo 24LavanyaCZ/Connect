@@ -29,9 +29,9 @@ const ViewPosts = () => {
   const route = useRoute<RouteProp<RootStack, 'ViewPosts'>>();
   const {post} = route.params;
   const loggedIn = useSelector((state: RootState) => state.auth.user);
-  console.log(loggedIn);
+  // console.log(loggedIn);
 
-  console.log('Post', post);
+  // console.log('Post', post);
   const date = new Date(post?.timeString);
 
   const formattedDate = date.toLocaleDateString('en-US', {
@@ -71,7 +71,7 @@ const ViewPosts = () => {
 
     if (postDoc) {
       const postData = postDoc.data() as Post; //its data
-      console.log(postData);
+      // console.log(postData);
       await deleteDoc(postRef);
 
         // dispatch(
@@ -101,14 +101,14 @@ const ViewPosts = () => {
     }
   };
   const handleLike = async ({post}) => {
-    console.log(post);
+    // console.log(post);
     const postRef = doc(db, 'Posts', post.id); //find post based on the id
     const postDoc = await getDoc(postRef); //get that post document
 
     if (postDoc) {
       let updatedLikes = 0;
       const postData = postDoc.data() as Post; //its data
-      console.log(postData);
+      // console.log(postData);
 
       if (alreadyLiked) {
         updatedLikes = postData.likes - 1;

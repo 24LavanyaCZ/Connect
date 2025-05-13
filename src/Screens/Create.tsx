@@ -38,10 +38,10 @@ const Create = () => {
 
   const navigation = useNavigation();
 
-  useEffect(() => {
-    console.log(imageData);
-    console.log(image);
-  }, [imageData]);
+  // useEffect(() => {
+  //   console.log(imageData);
+  //   console.log(image);
+  // }, [imageData]);
 
   const handlePickImage = () => {
     launchImageLibrary({mediaType: 'photo'}, async response => {
@@ -53,7 +53,7 @@ const Create = () => {
       const imageData = response.assets?.[0];
       if (!imageData) return;
 
-      console.log(imageData);
+      // console.log(imageData);
       setImageData(imageData);
       setImage(imageData?.uri);
     });
@@ -78,7 +78,7 @@ const Create = () => {
           body: formData,
         },
       );
-      console.log('res', res);
+      // console.log('res', res);
       const data = await res.json();
       console.log('Image uploaded to Cloudinary:', data);
 
@@ -99,7 +99,7 @@ const Create = () => {
     }
 
     const imageUrl = await uploadToCloud();
-    console.log('uri', imageUrl);
+    // console.log('uri', imageUrl);
     if (!imageUrl) return;
     const postData = {
       userId: loggedInUser.uid.toString(),
